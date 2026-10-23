@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Вход — FORM</title>
+
+    <link rel="stylesheet" href="/style.css">
+
+    <style>
+
+        body {
+
+            min-height: 100vh;
+
+            margin: 0;
+
+            background:
+
+                radial-gradient(
+
+                    ellipse at 50% 45%,
+
+                    rgba(214, 255, 63, 0.08),
+
+                    transparent 55%
+
+                ),
+
+                #0b1020;
+
+        }
+
+        .auth-page {
+
+            min-height: calc(100vh - 80px);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 40px 24px;
+
+            box-sizing: border-box;
+
+        }
+
+        .auth-card {
+
+            width: 100%;
+
+            max-width: 480px;
+
+            box-sizing: border-box;
+
+            padding: 44px;
+
+            border: 1px solid rgba(214, 255, 63, 0.18);
+
+            border-radius: 22px;
+
+            background: rgba(23, 32, 51, 0.94);
+
+            box-shadow:
+
+                0 24px 80px rgba(0, 0, 0, 0.35),
+
+                0 0 40px rgba(214, 255, 63, 0.035);
+
+        }
+
+        .auth-card .subtitle,
+
+        .auth-card h1,
+
+        .auth-card > .description {
+
+            text-align: center;
+
+        }
+
+        .auth-card h1 {
+
+            margin: 12px 0;
+
+            font-size: 36px;
+
+            line-height: 1.2;
+
+        }
+
+        .auth-card > .description {
+
+            margin-bottom: 32px;
+
+            color: #9ca3af;
+
+        }
+
+        .auth-card label {
+
+            display: block;
+
+            margin: 18px 0 8px;
+
+            color: #e5e7eb;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+        }
+
+        .auth-card input {
+
+            display: block;
+
+            width: 100%;
+
+            box-sizing: border-box;
+
+            padding: 15px 16px;
+
+            border: 1px solid #374151;
+
+            border-radius: 10px;
+
+            outline: none;
+
+            background: #0f172a;
+
+            color: #f9fafb;
+
+            font: inherit;
+
+            transition: border-color 0.2s, box-shadow 0.2s;
+
+        }
+
+        .auth-card input::placeholder {
+
+            color: #6b7280;
+
+        }
+
+        .auth-card input:focus {
+
+            border-color: #d6ff3f;
+
+            box-shadow: 0 0 0 3px rgba(214, 255, 63, 0.1);
+
+        }
+
+        .auth-card #submitButton {
+
+            display: block;
+
+            width: 100%;
+
+            margin-top: 24px;
+
+            padding: 15px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            background: #d6ff3f;
+
+            color: #0f172a;
+
+            font-size: 16px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: transform 0.2s, background 0.2s;
+
+        }
+
+        .auth-card #submitButton:hover {
+
+            background: #e2ff75;
+
+            transform: translateY(-2px);
+
+        }
+
+        .auth-card #message {
+
+            margin: 14px 0 0;
+
+            font-size: 14px;
+
+        }
+
+        .auth-switch {
+
+            margin: 26px 0 0;
+
+            text-align: center;
+
+            color: #9ca3af;
+
+            font-size: 14px;
+
+        }
+
+        .auth-switch button {
+
+            margin-top: 8px;
+
+            padding: 4px;
+
+            border: none;
+
+            background: transparent;
+
+            color: #d6ff3f;
+
+            font: inherit;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+        }
+
+        .auth-switch button:hover {
+
+            text-decoration: underline;
+
+        }
+
+@media (max-width: 600px) {
+
+            .auth-page {
+
+                padding: 24px 16px;
+
+            }
+
+            .auth-card {
+
+                padding: 28px 22px;
+
+            }
+
+            .auth-card h1 {
+
+                font-size: 30px;
+
+            }
+
+}
+
+
+
+
+
+/* Принудительное центрирование страницы авторизации */
+body {
+    margin: 0;
+    min-height: 100vh;
+}
+
+.auth-page {
+    width: 100%;
+    min-height: calc(100vh - 80px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    box-sizing: border-box;
+}
+
+.auth-card {
+    display: block;
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+
+    </style>
+
+</head>
+
+<body>
+
+    <header class="header">
+
+        <a href="/" class="logo">★ FORM</a>
+
+        <a href="/" class="header-button">На главную</a>
+
+    </header>
+
+    <mains="auth-page">
+
+        <section class="auth-card">
+
+            <p class="subtitle">ТВОЙ ПУТЬ К СИЛЕ</p>
+
+            <h1 id="formTitle">Войти в <span>FORM</span></h1>
+
+            <p class="description" id="formDescription">
+
+                Продолжай отслеживать свой прогресс.
+
+            </p>
+
+            <form id="authForm">
+
+                <div id="nameField" hidden>
+
+                    <label for="name">Имя</label>
+
+                    <input
+
+                        id="name"
+
+                        type="text"
+
+                        placeholder="Твоё имя"
+
+                        autocomplete="name"
+
+                    >
+
+                </div>
+
+                <label for="email">Электронная почта</label>
+
+                <input
+
+                    id="email"
+
+                    type="email"
+
+                    placeholder="name@example.com"
+
+                    autocomplete="email"
+
+                    required
+
+                >
+
+                <label for="password">Пароль</label>
+
+                <input
+
+                    id="password"
+
+                    type="password"
+
+                    placeholder="Минимум 6 символов"
+
+                    minlength="6"
+
+                    autocomplete="current-password"
+
+                    required
+
+                >
+
+                <p id="message" role="status" aria-live="polite"></p>
+
+                <button
+
+                    class="start-button"
+
+                    type="submit"
+
+                    id="submitButton"
+
+                >Войти</button>
+
+            </form>
+
+            <p class="auth-switch">
+
+                <span id="switchText">Нет аккаунта?</span>
+
+                <button
+
+                    type="button"
+
+                    id="switchButton"
+
+                >Зарегистрироваться</button>
+
+            </p>
+
+        </section>
+
+    </main>
+
+    <script src="/auth.js"></script>
+
+    <script>
+    getCurrentUser()
+        .then(user => {
+            if (user) {
+                window.location.replace("/cabinet.html");
+            }
+        })
+        .catch(error => {
+            console.error("Ошибка проверки авторизации:", error);
+        });
+</script>
+
+    <script>
+
+        const authForm = document.getElementById("authForm");
+
+        const nameField = document.getElementById("nameField");
+
+        const nameInput = document.getElementById("name");
+
+        const emailInput = document.getElementById("email");
+
+        const passwordInput = document.getElementById("password");
+
+        const message = document.getElementById("message");
+
+        const formTitle = document.getElementById("formTitle");
+
+        const formDescription = document.getElementById("formDescription");
+
+        const submitButton = document.getElementById("submitButton");
+
+        const switchText = document.getElementById("switchText");
+
+        const switchButton = document.getElementById("switchButton");
+
+        let isRegister = false;
+
+        let isSubmitting = false;
+
+        function updateForm() {
+
+            nameField.hidden = !isRegister;
+
+            nameInput.required = isRegister;
+
+            passwordInput.autocomplete = isRegister
+
+                ? "new-password"
+
+                : "current-password";
+
+            formTitle.innerHTML = isRegister
+
+                ? 'Создать <span>аккаунт</span>'
+
+                : 'Войти в <span>FORM</span>';
+
+            formDescription.textContent = isRegister
+
+                ? "Создай аккаунт и начни свой путь."
+
+                : "Продолжай отслеживать свой прогресс.";
+
+            submitButton.textContent = isRegister
+
+                ? "Зарегистрироваться"
+
+                : "Войти";
+
+            switchText.textContent = isRegister
+
+                ? "Уже есть аккаунт?"
+
+                : "Нет аккаунта?";
+
+            switchButton.textContent = isRegister
+
+                ? "Войти"
+
+                : "Зарегистрироваться";
+
+            message.textContent = "";
+
+        }
+
+        switchButton.addEventListener("click", () => {
+
+            isRegister = !isRegister;
+
+            updateForm();
+
+        });
+
+        authForm.addEventListener("submit", async (event) => {
+
+            event.preventDefault();
+
+            if (isSubmitting) return;
+
+            isSubmitting = true;
+
+            submitButton.disabled = true;
+
+            message.textContent = "";
+
+            try{
+
+                const data = {
+
+                    email: emailInput.value.trim(),
+
+                    password: passwordInput.value
+
+                };
+
+                const endpoint = isRegister
+
+                    ? "/api/register"
+
+                    : "/api/login";
+
+                if (isRegister) {
+
+                    data.name = nameInput.value.trim();
+
+                }
+
+                const response = await fetch(endpoint, {
+
+                    method: "POST",
+
+                    headers: {
+
+                        "Content-Type": "application/json"
+
+                    },
+
+                    credentials: "same-origin",
+
+                    body: JSON.stringify(data)
+
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+
+                    throw new Error(
+
+                        result.message || "Не удалось выполнить запрос."
+
+                    );
+
+                }
+
+                window.location.href = "/cabinet.html";
+
+            } catch (error) {
+
+                showMessage(
+
+                    message,
+
+                    error.message || "Не удалось связаться с сервером."
+
+                );
+
+            } finally {
+
+                isSubmitting = false;
+
+                submitButton.disabled = false;
+
+            }
+
+        });
+
+        updateForm();
+
+    </script>
+
+</body>
+
+</html> clas

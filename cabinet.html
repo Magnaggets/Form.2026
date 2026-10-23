@@ -1,0 +1,706 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль — FORM</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="form-pages.css">
+
+    <style>
+        /* Не меняем общую ширину и структуру остальных страниц FORM */
+        .profile-page {
+            position: relative;
+            z-index: 1;
+            width: min(1080px, calc(100% - 40px));
+            margin: 0 auto;
+            padding: 44px 0 80px;
+        }
+
+        .profile-heading {
+            max-width: 760px;
+            margin: 0 auto 34px;
+            text-align: center;
+        }
+
+        .profile-heading h1 {
+            margin-bottom: 12px;
+        }
+
+        .profile-heading h1 span {
+            color: var(--lime, #d6ff3f);
+        }
+
+        .profile-heading p {
+            color: var(--gray, #6b7280);
+        }
+
+        /* Основной профиль — строго по центру */
+        .profile-content {
+            width: 100%;
+            max-width: 760px;
+            margin: 0 auto;
+        }
+
+        .profile-card,
+        .profile-details,
+        .profile-guest {
+            box-sizing: border-box;
+            width: 100%;
+            background: var(--card, #172236);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
+            padding: 28px;
+        }
+
+        .profile-card {
+            text-align: center;
+        }
+
+        .profile-avatar {
+            width: 88px;
+            height: 88px;
+            margin: 0 auto 16px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: rgba(214, 255, 63, 0.12);
+            border: 1px solid rgba(214, 255, 63, 0.3);
+            color: var(--lime, #d6ff3f);
+            font-size: 34px;
+            font-weight: 800;
+        }
+
+        .profile-card h2 {
+            margin: 0 0 8px;
+            overflow-wrap: anywhere;
+        }
+
+        .profile-email {
+            color: var(--gray, #6b7280);
+            font-size: 14px;
+            overflow-wrap: anywhere;
+        }
+
+        .profile-status {
+            display: inline-block;
+            margin-top: 16px;
+            padding: 7px 12px;
+            border-radius: 999px;
+            background: rgba(214, 255, 63, 0.1);
+            color: var(--lime, #d6ff3f);
+            font-size: 12px;
+        }
+
+        .profile-details {
+            margin-top: 20px;
+        }
+
+        .profile-details h2 {
+            margin: 0 0 20px;
+        }
+
+        .profile-info {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .info-item {
+            box-sizing: border-box;
+            min-width: 0;
+            padding: 16px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.035);
+        }
+
+        .info-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--gray, #6b7280);
+            font-size: 13px;
+        }
+
+        .info-value {
+            overflow-wrap: anywhere;
+            font-weight: 600;
+        }
+
+        .profile-actions {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 22px;
+        }
+
+        .profile-button {
+            box-sizing: border-box;
+            min-height: 44px;
+            padding: 11px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--white, #e5e7eb);
+            font: inherit;
+            font-weight: 600;
+            text-decoration: none;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .profile-button:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .profile-button-primary {
+            border-color: var(--lime, #d6ff3f);
+            background: var(--lime, #d6ff3f);
+            color: #0f172a;
+        }
+
+        .profile-button-primary:hover {
+            background: #c7ef36;
+        }
+
+        .profile-button-danger {
+            color: #ff9292;
+        }
+
+        .profile-button:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .profile-form {
+            display: none;
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .profile-form.is-visible {
+            display: block;
+        }
+
+        .profile-form label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .profile-form input {
+            box-sizing: border-box;
+            display: block;
+            width: 100%;
+            min-height: 46px;
+            padding: 12px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 10px;
+            outline: none;
+            background: #0f172a;
+            color: var(--white, #e5e7eb);
+            font: inherit;
+        }
+
+        .profile-form input:focus {
+            border-color: var(--lime, #d6ff3f);
+        }
+
+        .profile-form .profile-actions {
+            justify-content: flex-start;
+        }
+
+        .profile-message {
+            display: none;
+            margin-top: 18px;
+            padding: 12px 14px;
+            border-radius: 10px;
+            overflow-wrap: anywhere;
+            font-size: 14px;
+        }
+
+        .profile-message.is-visible {
+            display: block;
+        }
+
+        .profile-message.success {
+            background: rgba(158, 219, 52, 0.1);
+            color: var(--lime, #d6ff3f);
+        }
+
+        .profile-message.error {
+            background: rgba(255, 90, 90, 0.1);
+            color: #ff9292;
+        }
+
+        .profile-guest {
+            text-align: center;
+        }
+
+        .profile-guest p {
+            margin: 12px 0 22px;
+            color: var(--gray, #6b7280);
+        }
+
+        /* Падающие звёзды не участвуют в раскладке страницы */
+        .star-layer {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .falling-star {
+            position: absolute;
+            top: -30px;
+            left: var(--star-left);
+            color: var(--lime, #d6ff3f);
+            opacity: 0;
+            font-size: var(--star-size);
+            text-shadow: 0 0 10px rgba(214, 255, 63, 0.4);
+            animation: star-fall var(--star-duration) linear var(--star-delay) infinite;
+            will-change: transform, opacity;
+        }
+
+        @keyframes star-fall {
+            0% {
+                transform: translate3d(0, -20px, 0) rotate(0deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: var(--star-opacity);
+            }
+
+            85% {
+                opacity: var(--star-opacity);
+            }
+
+            100% {
+                transform: translate3d(var(--star-drift), 110vh, 0) rotate(180deg);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .profile-page {
+                width: calc(100% - 28px);
+                padding-top: 30px;
+            }
+
+            .profile-card,
+            .profile-details,
+            .profile-guest {
+                padding: 20px;
+            }
+
+            .profile-info {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .profile-actions {
+                flex-direction: column;
+            }
+
+            .profile-button {
+                width: 100%;
+            }
+
+            .profile-form .profile-actions {
+                flex-direction: column;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .falling-star {
+                display: none;
+                animation: none;
+            }
+
+            .profile-button {
+                transition: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="star-layer" id="starLayer" aria-hidden="true"></div>
+
+    <header class="header">
+        <a href="index.html" class="logo">★ FORM</a>
+
+        <nav class="navigation">
+            <a href="index.html">Главная</a>
+            <a href="workouts.html">Тренировки</a>
+            <a href="progress.html">Прогресс</a>
+            <a href="history.html">История</a>
+            <a href="cabinet.html" class="active">Профиль</a>
+        </nav>
+
+        <a href="auth.html" class="header-button" id="accountLink">Войти</a>
+    </header>
+
+    <main class="profile-page">
+        <div class="profile-heading">
+            <h1>Мой <span>профиль</span></h1>
+            <p>Твои данные и управление аккаунтом FORM.</p>
+        </div>
+
+        <section class="profile-content" id="profileContent" aria-live="polite">
+            <div class="profile-guest">
+                <h2>Загружаем профиль...</h2>
+                <p>Получаем данные твоего аккаунта.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <a href="index.html" class="logo">★ FORM</a>
+        <p>Форма роста. Становись сильнее каждый день.</p>
+        <p class="footer-note">Тренируйся для себя.</p>
+    </footer>
+
+    <script src="script.js"></script>
+
+    <script>
+        (() => {
+            const profileContent = document.getElementById("profileContent");
+            const accountLink = document.getElementById("accountLink");
+            const starLayer = document.getElementById("starLayer");
+
+            let currentUser = null;
+            let originalName = "";
+            let saving = false;
+
+            function createFallingStars() {
+                if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+                    return;
+                }
+
+                const count = window.innerWidth < 600 ? 12 : 24;
+                const fragment = document.createDocumentFragment();
+
+                for (let i = 0; i < count; i++) {
+                    const star = document.createElement("span");
+
+                    star.className = "falling-star";
+                    star.textContent = "✦";
+
+                    star.style.setProperty("--star-left", `${Math.random() * 100}%`);
+                    star.style.setProperty("--star-size", `${8 + Math.random() * 12}px`);
+                    star.style.setProperty("--star-duration", `${7 + Math.random() * 12}s`);
+                    star.style.setProperty("--star-delay", `${-Math.random() * 18}s`);
+                    star.style.setProperty("--star-opacity", `${0.2 + Math.random() * 0.45}`);
+                    star.style.setProperty("--star-drift", `${Math.round(Math.random() * 100 - 50)}px`);
+
+                    fragment.appendChild(star);
+                }
+
+                starLayer.replaceChildren(fragment);
+            }
+
+            async function apiRequest(url, options = {}) {
+                const response = await fetch(url, {
+                    credentials: "same-origin",
+                    ...options,
+                    headers: {
+                        ...(options.body ? { "Content-Type": "application/json" } : {}),
+                        ...(options.headers || {})
+                    }
+                });
+
+                const data = await response.json().catch(() => ({}));
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.message || data.error || `Ошибка сервера (${response.status})`
+                    );
+                }
+
+                return data;
+            }
+
+            function showMessage(message, type) {
+                const element = document.getElementById("profileMessage");
+                if (!element) return;
+
+                element.textContent = message;
+                element.className = `profile-message is-visible ${type}`;
+            }
+
+            function renderGuest() {
+                currentUser = null;
+                originalName = "";
+
+                accountLink.textContent = "Войти";
+                accountLink.href = "auth.html";
+
+                profileContent.innerHTML = `
+                    <div class="profile-guest">
+                        <h2>Ты не авторизован</h2>
+                        <p>Войди в аккаунт, чтобы просматривать и редактировать свой профиль.</p>
+                        <div class="profile-actions">
+                            <a href="auth.html" class="profile-button profile-button-primary">
+                                Войти в аккаунт
+                            </a>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function renderProfile(user) {
+                currentUser = user;
+                originalName = user.name || "";
+
+                accountLink.textContent = "Мой профиль";
+                accountLink.href = "cabinet.html";
+
+                profileContent.innerHTML = `
+                    <section class="profile-card">
+                        <div class="profile-avatar" id="profileAvatar">?</div>
+                        <h2 id="profileName"></h2>
+                        <div class="profile-email" id="profileEmail"></div>
+                        <div class="profile-status">Аккаунт FORM</div>
+
+                        <div class="profile-actions">
+                            <button type="button"
+                                    class="profile-button profile-button-primary"
+                                    id="editProfileButton">
+                                Редактировать профиль
+                            </button>
+
+                            <button type="button"
+                                    class="profile-button profile-button-danger"
+                                    id="logoutButton">
+                                Выйти из аккаунта
+                            </button>
+                        </div>
+                    </section>
+
+                    <section class="profile-details">
+                        <h2>Информация об аккаунте</h2>
+
+                        <div class="profile-info">
+                            <div class="info-item">
+                                <span class="info-label">Имя пользователя</span>
+                                <div class="info-value" id="profileNameValue"></div>
+                            </div>
+
+                            <div class="info-item">
+                                <span class="info-label">Электронная почта</span>
+                                <div class="info-value" id="profileEmailValue"></div>
+                            </div>
+                        </div>
+
+                        <form class="profile-form" id="profileForm">
+                            <label for="editName">Новое имя</label>
+                            <input
+                                type="text"
+                                id="editName"
+                                name="name"
+                                maxlength="100"
+                                autocomplete="name"
+                                required
+                            >
+
+                            <div class="profile-actions">
+                                <button type="submit"
+                                        class="profile-button profile-button-primary"
+                                        id="saveProfileButton">
+                                    Сохранить
+                                </button>
+
+                                <button type="button"
+                                        class="profile-button"
+                                        id="cancelEditButton">
+                                    Отмена
+                                </button>
+                            </div>
+                        </form>
+
+                        <div class="profile-message"
+                             id="profileMessage"
+                             role="status"
+                             aria-live="polite"></div>
+                    </section>
+                `;
+
+                updateNameOnPage(user.name || "");
+                document.getElementById("profileEmail").textContent = user.email || "";
+                document.getElementById("profileEmailValue").textContent =
+                    user.email || "Не указана";
+
+                document.getElementById("editProfileButton")
+                    .addEventListener("click", openEditor);
+
+                document.getElementById("cancelEditButton")
+                    .addEventListener("click", closeEditor);
+
+                document.getElementById("profileForm")
+                    .addEventListener("submit", saveProfile);
+
+                document.getElementById("logoutButton")
+                    .addEventListener("click", logout);
+            }
+
+            function updateNameOnPage(name) {
+                const safeName = name.trim() || "Пользователь";
+
+                document.getElementById("profileAvatar").textContent =
+                    safeName.charAt(0).toUpperCase();
+
+                document.getElementById("profileName").textContent = safeName;
+                document.getElementById("profileNameValue").textContent = safeName;
+            }
+
+            function openEditor() {
+                const form = document.getElementById("profileForm");
+                const input = document.getElementById("editName");
+
+                input.value = currentUser.name || "";
+                form.classList.add("is-visible");
+
+                const message = document.getElementById("profileMessage");
+                message.className = "profile-message";
+                message.textContent = "";
+
+                document.getElementById("editProfileButton").disabled = true;
+                input.focus();
+            }
+
+            function closeEditor() {
+                if (saving) return;
+
+                document.getElementById("profileForm").classList.remove("is-visible");
+                document.getElementById("editProfileButton").disabled = false;
+                document.getElementById("editName").value = originalName;
+
+                const message = document.getElementById("profileMessage");
+                message.className = "profile-message";
+                message.textContent = "";
+            }
+
+            async function saveProfile(event) {
+                event.preventDefault();
+                if (saving) return;
+
+                const input = document.getElementById("editName");
+                const saveButton = document.getElementById("saveProfileButton");
+                const name = input.value.trim();
+
+                if (!name) {
+                    showMessage("Имя не может быть пустым.", "error");
+                    input.focus();
+                    return;
+                }
+
+                if (name.length > 100) {
+                    showMessage("Имя не должно быть длиннее 100 символов.", "error");
+                    input.focus();
+                    return;
+                }
+
+                if (name === currentUser.name) {
+                    showMessage("Имя не изменилось.", "success");
+                    return;
+                }
+
+                saving = true;
+                saveButton.disabled = true;
+                saveButton.textContent = "Сохраняем...";
+
+                try {
+                    const data = await apiRequest("/api/me", {
+                        method: "PUT",
+                        body: JSON.stringify({ name })
+                    });
+
+                    if (!data.user) {
+                        throw new Error("Сервер не вернул обновлённые данные.");
+                    }
+
+                    currentUser = data.user;
+                    originalName = currentUser.name || "";
+
+                    updateNameOnPage(originalName);
+                    document.getElementById("profileEmail").textContent =
+                        currentUser.email || "";
+                    document.getElementById("profileEmailValue").textContent =
+                        currentUser.email || "Не указана";
+
+                    document.getElementById("profileForm").classList.remove("is-visible");
+                    document.getElementById("editProfileButton").disabled = false;
+
+                    showMessage(data.message || "Профиль сохранён.", "success");
+                } catch (error) {
+                    showMessage(error.message || "Не удалось сохранить профиль.", "error");
+                } finally {
+                    saving = false;
+                    saveButton.disabled = false;
+                    saveButton.textContent = "Сохранить";
+                }
+            }
+
+            async function logout() {
+                const button = document.getElementById("logoutButton");
+
+                button.disabled = true;
+                button.textContent = "Выходим...";
+
+                try {
+                    await apiRequest("/api/logout", { method: "POST" });
+                    renderGuest();
+                } catch (error) {
+                    showMessage(error.message || "Не удалось выйти из аккаунта.", "error");
+                    button.disabled = false;
+                    button.textContent = "Выйти из аккаунта";
+                }
+            }
+
+            async function loadProfile() {
+                try {
+                    const data = await apiRequest("/api/me");
+
+                    if (!data.user) {
+                        renderGuest();
+                        return;
+                    }
+
+                    renderProfile(data.user);
+                } catch (error) {
+                    profileContent.innerHTML = `
+                        <div class="profile-guest">
+                            <h2>Не удалось загрузить профиль</h2>
+                            <p id="profileLoadError"></p>
+                            <div class="profile-actions">
+                                <button type="button"
+                                        class="profile-button profile-button-primary"
+                                        id="retryProfileButton">
+                                    Повторить
+                                </button>
+                            </div>
+                        </div>
+                    `;
+
+                    document.getElementById("profileLoadError").textContent =
+                        error.message || "Проверь соединение с сервером.";
+
+                    document.getElementById("retryProfileButton")
+                        .addEventListener("click", loadProfile);
+                }
+            }
+
+            createFallingStars();
+            loadProfile();
+        })();
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,802 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Прогресс — FORM</title>
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="form-pages.css">
+
+    <style>
+        .page-container {
+            width: min(1080px, calc(100% - 40px));
+            margin: 0 auto;
+            padding: 44px 0 80px;
+        }
+
+        .page-heading {
+            max-width: 760px;
+            margin: 0 auto 36px;
+            text-align: center;
+        }
+
+        .page-heading h1 {
+            margin: 12px 0;
+            font-size: clamp(34px, 5vw, 52px);
+            line-height: 1.15;
+        }
+
+        .page-heading h1 span,
+        .content-panel h2 span {
+            color: var(--lime, #d6ff3f);
+        }
+
+        .page-heading .description {
+            max-width: 650px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        .workout-stats {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            min-width: 0;
+            padding: 22px;
+            border: 1px solid rgba(255,255,255,.09);
+            border-radius: 16px;
+            background: var(--card, #172236);
+        }
+
+        .stat-card p {
+            margin: 0 0 12px;
+            color: var(--gray, #9ca3af);
+            line-height: 1.5;
+        }
+
+        .stat-card strong {
+            font-size: 30px;
+            overflow-wrap: anywhere;
+        }
+
+        .content-panel {
+            min-width: 0;
+            margin-bottom: 28px;
+            padding: 28px;
+            border: 1px solid rgba(255,255,255,.09);
+            border-radius: 18px;
+            background: var(--card, #172236);
+        }
+
+        .panel-heading {
+            margin-bottom: 24px;
+        }
+
+        .panel-heading h2 {
+            margin: 8px 0 0;
+            font-size: clamp(24px, 3vw, 32px);
+        }
+
+        .panel-heading .subtitle {
+            margin: 0;
+        }
+
+        .volume-value {
+            font-size: clamp(28px, 4vw, 38px);
+            color: var(--lime, #d6ff3f);
+            font-weight: 700;
+        }
+
+        .volume-description,
+        .muted-text {
+            color: var(--gray, #9ca3af);
+            line-height: 1.6;
+        }
+
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+            margin-bottom: 22px;
+        }
+
+        .form-field label {
+            font-weight: 600;
+        }
+
+        .form-field select {
+            width: 100%;
+            max-width: 460px;
+            padding: 13px 14px;
+            border: 1px solid rgba(255,255,255,.12);
+            border-radius: 10px;
+            background: var(--dark, #0f172a);
+            color: var(--white, #e5e7eb);
+            font: inherit;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        #progressCanvas {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            height: 320px;
+        }
+
+        #progressMessage {
+            color: var(--gray, #9ca3af);
+            line-height: 1.6;
+        }
+
+        .progress-links {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .progress-link-card {
+            padding: 22px;
+            border: 1px solid rgba(255,255,255,.09);
+            border-radius: 14px;
+            background: rgba(15,23,42,.35);
+        }
+
+        .progress-link-card h3 {
+            margin-top: 0;
+        }
+
+        .progress-link-card p {
+            color: var(--gray, #9ca3af);
+            line-height: 1.6;
+        }
+
+        .progress-link-card a {
+            color: var(--lime, #d6ff3f);
+            text-decoration: none;
+        }
+
+        /* Недельная цель */
+
+        .goal-header,
+        .reward-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .goal-value {
+            font-size: clamp(28px, 4vw, 38px);
+            font-weight: 700;
+            color: var(--lime, #d6ff3f);
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 12px;
+            margin: 18px 0 12px;
+            overflow: hidden;
+            border-radius: 999px;
+            background: rgba(255,255,255,.1);
+        }
+
+        .progress-fill {
+            width: 0;
+            height: 100%;
+            border-radius: inherit;
+            background: var(--lime, #d6ff3f);
+            transition: width .3s ease;
+        }
+
+        .goal-status {
+            margin-top: 14px;
+            line-height: 1.6;
+        }
+
+        .goal-extra-stats {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+            margin-top: 22px;
+        }
+
+        .goal-extra-card {
+            padding: 18px;
+            border-radius: 12px;
+            background: rgba(15,23,42,.35);
+            border: 1px solid rgba(255,255,255,.07);
+        }
+
+        .goal-extra-card p {
+            margin: 0 0 8px;
+            color: var(--gray, #9ca3af);
+        }
+
+        .goal-extra-card strong {
+            font-size: 25px;
+        }
+
+        /* Баллы и награды */
+
+        .reward-balance {
+            font-size: clamp(32px, 5vw, 44px);
+            font-weight: 800;
+            color: var(--lime, #d6ff3f);
+        }
+
+        .reward-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 46px;
+            padding: 12px 20px;
+            border: 0;
+            border-radius: 10px;
+            background: var(--lime, #d6ff3f);
+            color: #111827;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity .2s ease, transform .2s ease;
+        }
+
+        .reward-button:hover:not(:disabled) {
+            transform: translateY(-1px);
+        }
+
+        .reward-button:disabled {
+            opacity: .45;
+            cursor: not-allowed;
+        }
+
+        .reward-progress-label {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            color: var(--gray, #9ca3af);
+            font-size: 14px;
+        }
+
+        .reward-message {
+            min-height: 24px;
+            margin: 16px 0 0;
+            line-height: 1.6;
+        }
+
+        .reward-list {
+            display: grid;
+            gap: 12px;
+            margin-top: 22px;
+        }
+
+        .reward-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            border: 1px solid rgba(255,255,255,.09);
+            border-radius: 12px;
+            background: rgba(15,23,42,.3);
+        }
+
+        .reward-item h3 {
+            margin: 0 0 6px;
+            font-size: 16px;
+        }
+
+        .reward-item p {
+            margin: 0;
+            color: var(--gray, #9ca3af);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .reward-status {
+            flex-shrink: 0;
+            color: var(--lime, #d6ff3f);
+            font-weight: 700;
+        }
+
+        @media (max-width: 800px) {
+            .page-container {
+                width: calc(100% - 32px);
+                padding-top: 30px;
+            }
+
+            .workout-stats {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 520px) {
+            .page-container {
+                width: calc(100% - 24px);
+            }
+
+            .content-panel {
+                padding: 18px;
+            }
+
+            .stat-card {
+                padding: 16px;
+            }
+
+            .stat-card strong {
+                font-size: 25px;
+            }
+
+            .progress-links,
+            .goal-extra-stats {
+                grid-template-columns: 1fr;
+            }
+
+            #progressCanvas {
+                height: 260px;
+            }
+
+            .reward-button {
+                width: 100%;
+            }
+
+            .reward-item {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+
+
+
+
+
+/* FORM — рейтинг участников */
+#leaderboardPanel {
+    margin-top: 24px;
+}
+
+#leaderboardPanel .leaderboard-description {
+    margin-top: 10px;
+    color: var(--gray, #6b7280);
+    line-height: 1.6;
+}
+
+#leaderboardPanel .leaderboard-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 18px;
+    margin-bottom: 16px;
+    border: 1px solid rgba(214, 255, 63, 0.15);
+    border-radius: 10px;
+    background: var(--card, #172236);
+    color: var(--white, #e5e7eb);
+}
+
+#leaderboardPanel .leaderboard-summary strong {
+    color: var(--lime, #d6ff3f);
+    font-size: 18px;
+}
+
+#leaderboardPanel .table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+}
+
+#leaderboardPanel .leaderboard-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--white, #e5e7eb);
+    font-size: 14px;
+}
+
+#leaderboardPanel .leaderboard-table th,
+#leaderboardPanel .leaderboard-table td {
+    padding: 16px 18px;
+    text-align: left;
+    vertical-align: middle;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+#leaderboardPanel .leaderboard-table th {
+    background: var(--card, #172236);
+    color: var(--lime, #d6ff3f);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+#leaderboardPanel .leaderboard-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+#leaderboardPanel .leaderboard-table th:first-child,
+#leaderboardPanel .leaderboard-table td:first-child,
+#leaderboardPanel .leaderboard-table th:nth-child(3),
+#leaderboardPanel .leaderboard-table td:nth-child(3),
+#leaderboardPanel .leaderboard-table th:nth-child(4),
+#leaderboardPanel .leaderboard-table td:nth-child(4) {
+    text-align: center;
+}
+
+#leaderboardPanel .leaderboard-table td:nth-child(3) {
+    color: var(--lime, #d6ff3f);
+    font-weight: 700;
+}
+
+#leaderboardPanel .leaderboard-table tbody tr:hover {
+    background: rgba(214, 255, 63, 0.04);
+}
+
+#leaderboardPanel .leaderboard-table tbody tr.leaderboard-you {
+    background: rgba(214, 255, 63, 0.07);
+}
+
+#leaderboardPanel .leaderboard-you-label {
+    margin-left: 6px;
+    color: var(--lime, #d6ff3f);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+#leaderboardPanel #leaderboardMessage {
+    line-height: 1.6;
+    color: var(--gray, #6b7280);
+}
+
+@media (max-width: 600px) {
+    #leaderboardPanel .leaderboard-table {
+        min-width: 440px;
+    }
+
+    #leaderboardPanel .leaderboard-table th,
+    #leaderboardPanel .leaderboard-table td {
+        padding: 12px;
+    }
+}
+
+
+
+
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+    <a href="index.html" class="logo">★ FORM</a>
+
+    <nav class="navigation">
+        <a href="index.html">Главная</a>
+        <a href="workouts.html">Тренировки</a>
+        <a href="progress.html" class="active">Прогресс</a>
+        <a href="history.html">История</a>
+        <a href="cabinet.html">Профиль</a>
+    </nav>
+
+    <a href="auth.html" class="header-button" id="accountLink">
+        Войти
+    </a>
+</header>
+
+<main class="page-container">
+
+    <section class="page-heading">
+        <p class="subtitle">РЕЗУЛЬТАТЫ ТВОЕЙ РАБОТЫ</p>
+
+        <h1>Твой <span>прогресс.</span></h1>
+
+        <p class="description">
+            Смотри, как меняются твои показатели.
+            Анализируй тренировки и сравнивай результаты
+            с предыдущими занятиями.
+        </p>
+    </section>
+
+    <!-- Общая статистика -->
+
+    <section class="workout-stats">
+
+        <article class="stat-card">
+            <p>Всего тренировок</p>
+            <strong id="workoutCount">0</strong>
+        </article>
+
+        <article class="stat-card">
+            <p>Выполнено упражнений</p>
+            <strong id="exerciseCount">0</strong>
+        </article>
+
+        <article class="stat-card">
+            <p>За последние 7 дней</p>
+            <strong id="weekCount">0</strong>
+        </article>
+
+        <article class="stat-card">
+            <p>Очки</p>
+            <strong id="pointsCount">0</strong>
+        </article>
+
+        <article class="stat-card">
+            <p>Серия успешных недель</p>
+            <strong id="streakWeeks">0</strong>
+        </article>
+
+        <article class="stat-card">
+            <p>Бесплатных тренировок получено</p>
+            <strong id="freeTrainingCount">0</strong>
+        </article>
+
+    </section>
+
+    <!-- Недельная цель -->
+
+    <section class="content-panel" id="weeklyGoalPanel">
+
+        <div class="panel-heading">
+            <p class="subtitle">РЕГУЛЯРНОСТЬ</p>
+
+            <div class="goal-header">
+                <h2>Цель <span>недели.</span></h2>
+
+                <div class="goal-value" id="weeklyGoalCount">
+                    0 / 3
+                </div>
+            </div>
+        </div>
+
+        <div
+            class="progress-track"
+            role="progressbar"
+            aria-label="Выполнение недельной цели"
+            aria-valuemin="0"
+            aria-valuemax="3"
+            aria-valuenow="0"
+            id="weeklyGoalProgress"
+        >
+            <div class="progress-fill" id="weeklyGoalFill"></div>
+        </div>
+
+        <p class="goal-status" id="weeklyGoalStatus" aria-live="polite">
+            Загружаем статистику недели...
+        </p>
+
+        <div class="goal-extra-stats">
+            <article class="goal-extra-card">
+                <p>Цель на неделю</p>
+                <strong id="weeklyGoalTarget">3 тренировки</strong>
+            </article>
+
+            <article class="goal-extra-card">
+                <p>До выполнения цели</p>
+                <strong id="weeklyGoalRemaining">3</strong>
+            </article>
+        </div>
+
+    </section>
+
+    <!-- Баллы и награды -->
+
+    <section class="content-panel" id="rewardsPanel">
+
+        <div class="panel-heading">
+            <p class="subtitle">СИСТЕМА НАГРАД</p>
+            <h2>Зарабатывай <span>баллы.</span></h2>
+        </div>
+
+        <div class="reward-header">
+            <div>
+                <p class="muted-text">Твой баланс</p>
+                <div class="reward-balance">
+                    <span id="rewardPoints">0</span>
+                    <span>баллов</span>
+                </div>
+            </div>
+
+            <button
+                type="button"
+                class="reward-button"
+                id="claimRewardButton"
+                disabled
+            >
+                Получить бесплатную тренировку
+            </button>
+        </div>
+
+        <div
+            class="progress-track"
+            role="progressbar"
+            aria-label="Прогресс до бесплатной тренировки"
+            aria-valuemin="0"
+            aria-valuemax="1000"
+            aria-valuenow="0"
+            id="rewardProgress"
+        >
+            <div class="progress-fill" id="rewardProgressFill"></div>
+        </div>
+
+        <div class="reward-progress-label">
+            <span id="rewardProgressText">0 из 1000 баллов</span>
+            <span id="rewardRemaining">Осталось 1000 баллов</span>
+        </div>
+
+        <p
+            class="reward-message"
+            id="rewardMessage"
+            role="status"
+            aria-live="polite"
+        ></p>
+
+        <div class="panel-heading" style="margin-top: 30px; margin-bottom: 12px;">
+            <h2 style="font-size: 22px;">Мои <span>награды.</span></h2>
+        </div>
+
+        <div class="reward-list" id="rewardList">
+            <p class="muted-text">Загружаем награды...</p>
+        </div>
+
+    </section>
+
+    <!-- Объём нагрузки -->
+
+    <section class="content-panel">
+
+        <div class="panel-heading">
+            <p class="subtitle">ОБЪЁМ НАГРУЗКИ</p>
+            <h2>Вся выполненная <span>работа.</span></h2>
+        </div>
+
+        <div class="volume-value" id="totalVolume">
+            0 кг
+        </div>
+
+        <p class="volume-description">
+            Суммарный объём рассчитывается по сохранённым упражнениям:
+            вес × повторения × подходы.
+        </p>
+
+    </section>
+
+    <!-- Динамика упражнения -->
+
+    <section class="content-panel">
+
+        <div class="panel-heading">
+            <p class="subtitle">ИЗМЕНЕНИЕ ПОКАЗАТЕЛЕЙ</p>
+            <h2>Динамика <span>нагрузки.</span></h2>
+        </div>
+
+        <div class="form-field">
+            <label for="progressExercise">
+                Выбери упражнение
+            </label>
+
+            <select id="progressExercise">
+                <option value="">Загрузка данных...</option>
+            </select>
+        </div>
+
+        <div class="chart-container">
+            <canvas
+                id="progressCanvas"
+                width="1000"
+                height="320"
+                role="img"
+                aria-label="График изменения рабочего веса по тренировкам"
+            ></canvas>
+        </div>
+
+    </section>
+    
+
+
+
+
+<!-- Рейтинг участников FORM -->
+<section class="content-panel" id="leaderboardPanel">
+    <div class="panel-heading">
+        <p class="subtitle">РЕЙТИНГ УЧАСТНИКОВ</p>
+        <h2>Винстрик <span>посещений.</span></h2>
+        <p class="leaderboard-description">
+            Цель — 3 тренировки за календарную неделю.
+        </p>
+    </div>
+
+    <div class="leaderboard-summary">
+        <span>Всего участников</span>
+        <strong id="leaderboardTotal">0</strong>
+    </div>
+
+    <p id="leaderboardMessage" class="muted-text">
+        Загружаем рейтинг...
+    </p>
+
+    <div class="table-wrapper" id="leaderboardTableWrapper" hidden>
+        <table class="leaderboard-table">
+            <thead>
+                <tr>
+                    <th>Место</th>
+                    <th>Участник</th>
+                    <th>Винстрик</th>
+                    <th>За неделю</th>
+                </tr>
+            </thead>
+            <tbody id="leaderboardBody"></tbody>
+        </table>
+    </div>
+</section>
+
+
+    
+
+    
+
+    <!-- Переходы -->
+
+    <section class="content-panel">
+
+        <div class="panel-heading">
+            <p class="subtitle">СЛЕДУЮЩИЙ ШАГ</p>
+            <h2>Продолжай <span>работать.</span></h2>
+        </div>
+
+        <div class="progress-links">
+
+            <article class="progress-link-card">
+                <h3>Новая тренировка</h3>
+
+                <p>
+                    Запиши упражнение, нагрузку, повторения
+                    и подходы, чтобы пополнить статистику.
+                </p>
+
+                <a href="workouts.html">К тренировкам →</a>
+            </article>
+
+            <article class="progress-link-card">
+                <h3>История занятий</h3>
+
+                <p>
+                    Открой сохранённые занятия и просмотри
+                    результаты предыдущих тренировок.
+                </p>
+
+                <a href="history.html">К истории →</a>
+            </article>
+
+        </div>
+
+    </section>
+
+</main>
+
+<footer class="footer">
+    <a href="index.html" class="logo">★ FORM</a>
+    <p>Форма роста. Становись сильнее каждый день.</p>
+    <p class="footer-note">Тренируйся для себя.</p>
+</footer>
+
+<script src="script.js"></script>
+<script src="sport-pages.js"></script>
+
+<script>
+</script>
+
+</body>
+</html>
